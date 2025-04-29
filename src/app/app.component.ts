@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http'; // <-- AGREGAR ESTO
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [RouterOutlet, HttpClientModule], // <-- AGREGAR AQUÍ TAMBIÉN
   templateUrl: './app.component.html',
-  styleUrl: './app.component.sass'
+  styleUrls: ['./app.component.sass']
 })
 export class AppComponent {
-  title = 'frontend-p1sw2';
+  title = 'p1sw2';
 }
+

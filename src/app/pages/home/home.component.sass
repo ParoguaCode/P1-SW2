@@ -1,0 +1,211 @@
+.home-container
+  background: linear-gradient(135deg, #1267c4, #5bb4ed) // Fondo degradado
+  min-height: 100vh // Asegura que el fondo cubra toda la pantalla
+  padding: 20px
+  color: white // Cambia el color del texto para que contraste con el fondo
+  text-align: center
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  font-family: Arial, sans-serif
+
+  .home-header
+    text-align: center
+    margin-bottom: 20px
+
+    h1
+      font-size: 2.5rem
+      font-weight: bold
+
+    p
+      font-size: 1.2rem
+
+  .columns
+    display: flex
+    justify-content: space-between
+    gap: 20px
+    background-color: white
+    border-radius: 10px
+
+    .left-column, .right-column
+      flex: 1
+      max-width: 500px
+      padding: 20px 20px 10px 20px
+      color: #333 // Cambia el color del texto dentro de las columnas
+      margin: 0 auto // Centra las columnas en pantallas más pequeñas
+
+      h2
+        text-align: center
+        margin-bottom: 15px
+
+      form
+        display: flex
+        flex-direction: column
+        gap: 15px
+
+      label
+        display: flex
+        flex-direction: column
+        font-size: 14px
+
+      select, input
+        padding: 8px
+        border: 1px solid #ccc
+        border-radius: 4px
+
+      button
+        padding: 10px
+        background-color: #007bff
+        color: white
+        border: none
+        border-radius: 4px
+        cursor: pointer
+
+        &:hover
+          background-color: #0056b3
+
+      .file-upload
+        display: flex
+        align-items: center
+        justify-content: flex-start
+        padding: 15px 20px
+        border: 2px dashed #007bff
+        border-radius: 8px
+        background-color: #f9f9f9
+        cursor: pointer
+        transition: background-color 0.3s, border-color 0.3s
+        margin-bottom: 15px
+        width: 80% // Asegura que el campo ocupe todo el ancho disponible
+
+        &:hover
+          background-color: #e6f7ff
+          border-color: #0056b3
+
+        i
+          font-size: 20px
+          color: #007bff
+          margin-right: 10px // Espacio entre el icono y el texto
+
+        span
+          font-size: 16px
+          color: #007bff
+          font-weight: bold
+
+        input
+          display: none
+
+      button
+        padding: 12px
+        background-color: #007bff
+        color: white
+        border: none
+        border-radius: 8px
+        font-size: 16px
+        cursor: pointer
+        transition: background-color 0.3s
+
+        &:hover
+          background-color: #0056b3
+
+.right-column
+  form
+    .file-upload
+      display: flex
+      align-items: center
+      justify-content: flex-start
+      padding: 15px 20px
+      border: 2px dashed #007bff
+      border-radius: 8px
+      background-color: #f9f9f9
+      cursor: pointer
+      transition: background-color 0.3s, border-color 0.3s
+      margin-bottom: 15px
+      width: 100% // Asegura que el campo ocupe todo el ancho disponible
+
+      &:hover
+        background-color: #e6f7ff
+        border-color: #0056b3
+
+      i
+        font-size: 20px
+        color: #007bff
+        margin-right: 10px // Espacio entre el icono y el texto
+
+      span
+        font-size: 16px
+        color: #007bff
+        font-weight: bold
+
+      input
+        display: none
+
+    button
+      padding: 12px
+      background-color: #007bff
+      color: white
+      border: none
+      border-radius: 8px
+      font-size: 16px
+      cursor: pointer
+      transition: background-color 0.3s
+
+      &:hover
+        background-color: #0056b3
+
+.home-container
+  text-align: center
+  //margin-top: 100px
+
+.actions
+  margin-top: 30px
+  display: flex
+  gap: 20px
+  justify-content: center
+
+.action-button
+  background-color: #4CAF50
+  color: white
+  padding: 10px 20px
+  border: none
+  border-radius: 8px
+  font-size: 18px
+  cursor: pointer
+  transition: background-color 0.3s
+
+  &:hover
+    background-color: #45a049
+
+.car-icon
+  font-size: 50px
+
+@media (max-width: 768px)
+  .columns
+    flex-direction: column
+    align-items: center
+
+    .left-column, .right-column
+      max-width: 100% // Las columnas ocuparán todo el ancho disponible
+      
+
+.svg-decorator
+  position: absolute
+  bottom: 0
+  left: 15%
+  max-width: 20vw // La imagen ocupará un 20% del ancho de la pantalla
+  width: 50% // Asegura que no exceda su contenedor
+  height: auto // Mantiene la proporción de la imagen
+  opacity: 1
+  animation: float 3s ease-in-out infinite
+
+
+@media (max-width: 768px)
+  .svg-decorator
+    max-width: 30vw // Reduce el tamaño de la imagen en pantallas pequeñas
+    left:10px
+
+@keyframes float
+  0%, 100%
+    transform: translateY(0)
+  50%
+    transform: translateY(-10px)
