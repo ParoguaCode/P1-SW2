@@ -1,1 +1,37 @@
-<p>history works!</p>
+<div class="home-container">
+  <h1 class="text-center mb-4">Historial de Evaluaciones</h1>
+  <h3 class="text-center text-muted mb-4">
+    Lista de todas las evaluaciones realizadas para la placa <strong>1234567890</strong>
+  </h3>
+
+  <div class="card-body">
+    <table class="table custom-table">
+      <thead>
+        <tr>
+          <th class="text-center">Nro</th>
+          <th class="text-center">Fecha</th>
+          <th class="text-center">Resultado</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="text-center">1</td>
+          <td class="text-center">02/04/2025</td>
+          <td class="text-center">Soy un resultado</td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-outline-primary" (click)="verDetalle(1)">Ver Detalle</button>
+          </td>
+        </tr>
+        <tr>
+          <td class="text-center">2</td>
+          <td class="text-center">03/04/2025</td>
+          <td class="text-center">Otro resultado</td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-outline-primary" (click)="verDetalle(2)">Ver Detalle</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
