@@ -5,6 +5,23 @@
     <p>Evalúa los daños físicos y sonidos anómalos de tu vehículo de manera rápida y sencilla.</p>
   </div>
 
+  <div class="history-search-container">
+    <h3>¿Ya tienes evaluaciones previas?</h3>
+    <div class="input-group">
+      <input 
+        type="text" 
+        class="form-control" 
+        placeholder="Ingresa el número de placa" 
+        [(ngModel)]="searchPlate"
+        (keyup.enter)="buscarHistorial()">
+      <button class="btn btn-primary" (click)="buscarHistorial()">
+        Buscar historial
+      </button>
+    </div>
+    <div *ngIf="searchError" class="text-danger mt-2">
+      {{ searchError }}
+    </div>
+  </div>
  
   <div class="columns">
        <!-- Imagen decorativa -->
@@ -19,38 +36,37 @@
       <h2>Registro de Vehículo</h2>
       
       <label>Placa:
-        <input type="text" placeholder="Ej: 1234ABC" [(ngModel)]="placaVehiculo" name="placa">
+        <input 
+          type="text" 
+          placeholder="Ej: 1234ABC" 
+          [(ngModel)]="placaVehiculo" 
+          name="placa" 
+          required
+          #placaInput="ngModel">
+        <div *ngIf="placaInput.invalid && (placaInput.dirty || placaInput.touched)" class="error-message">
+          La placa es obligatoria
+        </div>
       </label>
 
       
       <label>Marca:
         <select [(ngModel)]="marcaSeleccionada" (change)="onMarcaChange()" name="marca">
-          <option value="" disabled selected>Seleccione una marca</option>\
+          <option value="" disabled selected>Seleccione una marca</option>
           <option *ngFor="let marca of marcasUnicas" [value]="marca">{{ marca }}</option>
-          <!--option>toyota</option>
-          <option>honda</option>
-          <option>ford</option-->
-          
         </select>
       </label>
       
       <label>Modelo:
-        <select >
+        <select [(ngModel)]="modeloSeleccionado" (change)="onModeloChange()" name="modelo">
           <option value="" disabled selected>Seleccione un modelo</option>
           <option *ngFor="let modelo of modelosPorMarca[marcaSeleccionada]" [value]="modelo">{{ modelo }}</option>
-          <!--option>corolla</option>
-          <option>civic</option>
-          <option>mustang</option-->
         </select>
       </label>
       
       <label>Año:
-        <select >
+        <select [(ngModel)]="anioSeleccionado" name="anio" [disabled]="!modeloSeleccionado">
           <option value="" disabled selected>Seleccione un año</option>
-          <option *ngFor="let anio of aniosPorModelo[modeloSeleccionado]" [value]="anio">{{ anio }}</option>
-          <!--option>2020</option>
-          <option>2021</option>
-          <option>2022</option-->
+          <option *ngFor="let anio of getAniosDisponibles()" [value]="anio">{{ anio }}</option>
         </select>
       </label>
 

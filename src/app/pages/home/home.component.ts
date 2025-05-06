@@ -26,11 +26,13 @@ export class HomeComponent implements OnInit{
   vehiculos: Vehiculo[] = [];
   marcasUnicas: string[] = [];
   modelosPorMarca: { [marca: string]: string[]} = {};
-  aniosPorModelo: { [modelo: string]:number[]} = {};
+  aniosPorMarcaModelo: { [marcaModelo: string]: number[] } = {};
   marcaSeleccionada: string = '';
   modeloSeleccionado: string = '';
   anioSeleccionado: number | null = null;
   placaVehiculo:string = '';
+  searchPlate: string = '';
+  searchError: string = '';
 
   selectedFile: File | null = null;
 
@@ -45,7 +47,7 @@ export class HomeComponent implements OnInit{
   }
 
   cargarVehiculos(): void{
-      this.http.get<Vehiculo[]>('http://localhost:3000/api/vehiculo').subscribe((data) => {
+      this.http.get<Vehiculo[]>('https://parcial1-sw2-backend.onrender.com/api/vehiculo').subscribe((data) => {
         this.vehiculos = data;
         this.procesarDatosVehiculos();
       },
@@ -55,30 +57,32 @@ export class HomeComponent implements OnInit{
     );
   }
 
-  procesarDatosVehiculos(): void{
-   //Extraer marcas unicas
-   this.marcasUnicas = [... new Set(this.vehiculos.map(v => v.marca))].sort();
-   
-   //Agrupar modelos por marca
-   this.marcasUnicas.forEach(marca => {
-    const modelosDeMarca = this.vehiculos.filter(v => v.marca === marca).map(v => v.modelo);
-    this.modelosPorMarca[marca] = [...new Set(modelosDeMarca)].sort();
-   });
+  procesarDatosVehiculos(): void {
+    //Extraer marcas unicas
+    this.marcasUnicas = [... new Set(this.vehiculos.map(v => v.marca))].sort();
+    
+    //Agrupar modelos por marca
+    this.marcasUnicas.forEach(marca => {
+      const modelosDeMarca = this.vehiculos.filter(v => v.marca === marca).map(v => v.modelo);
+      this.modelosPorMarca[marca] = [...new Set(modelosDeMarca)].sort();
+    });
 
-   //Agrupar años por modelo
-   this.vehiculos.forEach(v => {
-    if(!this.aniosPorModelo[v.modelo]){
-      this.aniosPorModelo[v.modelo] = [];
-    }
-    if(!this.aniosPorModelo[v.modelo].includes(v.año)){
-      this.aniosPorModelo[v.modelo].push(v.año);
-    }
-   });
-   // Ordenar los años de cada modelo
-   Object.keys(this.aniosPorModelo).forEach(modelo => {
-    // Ordenar de más reciente a más antiguo
-    this.aniosPorModelo[modelo].sort((a, b) => b - a); 
-   });
+    //Agrupar años por marca y modelo
+    this.vehiculos.forEach(v => {
+      const key = `${v.marca}|${v.modelo}`; // Composite key
+      if(!this.aniosPorMarcaModelo[key]){
+        this.aniosPorMarcaModelo[key] = [];
+      }
+      if(!this.aniosPorMarcaModelo[key].includes(v.año)){
+        this.aniosPorMarcaModelo[key].push(v.año);
+      }
+    });
+    
+    // Ordenar los años de cada modelo
+    Object.keys(this.aniosPorMarcaModelo).forEach(key => {
+      // Ordenar de más reciente a más antiguo
+      this.aniosPorMarcaModelo[key].sort((a, b) => b - a); 
+    });
   }
 
   onMarcaChange(): void{
@@ -98,11 +102,19 @@ export class HomeComponent implements OnInit{
     this.isModalOpen = false;
   }
 
+  getAniosDisponibles(): number[] {
+    if (!this.marcaSeleccionada || !this.modeloSeleccionado) {
+      return [];
+    }
+    const key = `${this.marcaSeleccionada}|${this.modeloSeleccionado}`;
+    return this.aniosPorMarcaModelo[key] || [];
+  }
+
   findVehiculoId(marca: string, modelo: string, anio: number): Promise<number | null> {
     // Return a Promise so we can use async/await with this function
     return new Promise((resolve, reject) => {
       // Make a fresh API call to get the latest vehicles data
-      this.http.get<Vehiculo[]>('http://localhost:3000/api/vehiculo').subscribe({
+      this.http.get<Vehiculo[]>('https://parcial1-sw2-backend.onrender.com/api/vehiculo').subscribe({
         next: (vehiculos) => {
           const vehiculoEncontrado = vehiculos.find(v => 
             v.marca === marca && 
@@ -159,12 +171,13 @@ export class HomeComponent implements OnInit{
         formData.append('file', this.selectedFile);
         formData.append('fileName', this.selectedFile.name);
         formData.append('vehiculoId', vehiculoId.toString());
+        formData.append('placa', this.placaVehiculo.toString());
 
         // Mostrar mensaje de carga
         alert('Procesando su solicitud, por favor espere...');
 
         //this.http.post<any>('https://jhwd7bkf-3000.brs.devtunnels.ms/api/archivo/upload-file', formData).subscribe({
-        this.http.post<any>('http://localhost:3000/api/archivo/upload-file', formData).subscribe({
+        this.http.post<any>('https://parcial1-sw2-backend.onrender.com/api/archivo/upload-file', formData).subscribe({
           next: (response) => {
             console.log('Respuesta del servidor:', response);
             
@@ -297,4 +310,28 @@ export class HomeComponent implements OnInit{
     // Calcular presupuesto estimado
     return Math.round(valorBase * multGravedad * multTipo);
   }
+
+  buscarHistorial() {
+    if (!this.searchPlate || this.searchPlate.trim() === '') {
+      this.searchError = 'Por favor, ingresa un número de placa válido';
+      return;
+    }
+    
+    // Verificar si existe historial para esta placa
+    this.http.get<any>(`https://parcial1-sw2-backend.onrender.com/api/historial/placa/${this.searchPlate}`).subscribe(
+      (data) => {
+        if (data && data.evaluaciones && data.evaluaciones.length > 0) {
+          // Si hay historial, navegar a la página de historial con la placa como parámetro
+          this.router.navigate(['/history'], { queryParams: { placa: this.searchPlate } });
+        } else {
+          this.searchError = 'No se encontró historial para esta placa';
+        }
+      },
+      (error) => {
+        console.error('Error al buscar historial:', error);
+        this.searchError = 'Error al buscar historial. Intenta nuevamente.';
+      }
+    );
+  }
+  
 }
